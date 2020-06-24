@@ -28,6 +28,7 @@ class TodoService {
   @state
   visibilityFilter: VisibilityFilter = 'All';
 
+  @autobind
   @action
   add(text: string) {
     this.list.push({

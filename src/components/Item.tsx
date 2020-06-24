@@ -11,6 +11,11 @@ interface ItemProps {
 export const Item: FC<ItemProps> = ({ todo, onEdit, onToggle, onDelete }) => {
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(todo.text);
+  const onUpdate = () => {
+    onEdit(todo.id, text.trim());
+    setText(text);
+    setEditing(false);
+  };
   return (
     <li
       onDoubleClick={() => !editing && setEditing(true)}
@@ -24,7 +29,7 @@ export const Item: FC<ItemProps> = ({ todo, onEdit, onToggle, onDelete }) => {
           className="toggle"
           checked={todo.completed}
           onChange={() => onToggle(todo.id)}
-          autoFocus={true}
+          autoFocus
         />
         <label>{todo.text}</label>
         <button className="destroy" onClick={() => onDelete(todo.id)} />
@@ -32,14 +37,15 @@ export const Item: FC<ItemProps> = ({ todo, onEdit, onToggle, onDelete }) => {
       {editing && (
         <input
           className="edit"
-          value={todo.text}
+          value={text}
+          autoFocus
           onChange={(e) => setText(e.target.value)}
           onKeyPress={(e) => {
             if (e.which === 13) {
-              onEdit(todo.id, text.trim());
-              setText(todo.text);
+              onUpdate();
             }
           }}
+          onBlur={onUpdate}
         />
       )}
     </li>
