@@ -1,17 +1,17 @@
 import { testBed } from 'reactant';
-import { CounterService } from './counter.service';
+import { TodoService } from './todo.service';
 
 describe('CounterService', () => {
-  let module: CounterService;
+  let module: TodoService;
 
   beforeEach(() => {
     module = testBed({
-      main: CounterService,
+      main: TodoService,
       modules: [],
     }).instance;
   });
 
   test('should be created', () => {
-    expect(module instanceof CounterService).toBeTruthy();
+    expect(module instanceof TodoService).toBeTruthy();
   });
 });
