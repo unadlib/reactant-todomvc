@@ -1,9 +1,23 @@
 import React from "react";
-import { ViewModule, injectable, useConnector, computed } from "reactant";
+import {
+  ViewModule,
+  injectable,
+  useConnector,
+  computed,
+  state,
+  autobind,
+  action,
+} from "reactant";
 import { TodoService } from "./todo.service";
 import { Header } from "./components/Header";
 import { List } from "./components/List";
 import { Footer } from "./components/Footer";
+
+const filters = ["All", "Active", "Completed"] as const;
+
+export type Filters = typeof filters;
+
+export type VisibilityFilter = Filters[number];
 
 @injectable()
 class AppView extends ViewModule {
@@ -11,13 +25,27 @@ class AppView extends ViewModule {
     super();
   }
 
-  @computed(({ todo }: AppView) => [todo.visibilityFilter, todo.list])
+  filters = filters;
+
+  @state
+  visibilityFilter: VisibilityFilter = "All";
+
+  @autobind
+  @action
+  setVisibilityFilter(filter: VisibilityFilter) {
+    this.visibilityFilter = filter;
+  }
+
+  @computed(({ visibilityFilter, todo }: AppView) => [
+    visibilityFilter,
+    todo.list,
+  ])
   get filteredList() {
     return this.todo.list.filter(
       (item) =>
-        (this.todo.visibilityFilter === "Active" && !item.completed) ||
-        (this.todo.visibilityFilter === "Completed" && item.completed) ||
-        this.todo.visibilityFilter === "All"
+        (this.visibilityFilter === "Active" && !item.completed) ||
+        (this.visibilityFilter === "Completed" && item.completed) ||
+        this.visibilityFilter === "All"
     );
   }
 
@@ -49,7 +77,7 @@ class AppView extends ViewModule {
     const data = useConnector(() => ({
       filteredList: this.filteredList,
       allSelected: this.allSelected,
-      visibilityFilter: this.todo.visibilityFilter,
+      visibilityFilter: this.visibilityFilter,
     }));
     return (
       <div>
@@ -62,13 +90,13 @@ class AppView extends ViewModule {
           onToggle={this.todo.toggle}
           onDelete={this.todo.delete}
         />
-        <Footer 
-            activeCount={this.activeCount}
-            completedCount={this.completedCount}
-            filters={this.todo.filters}
-            visibilityFilter={data.visibilityFilter}
-            onClearCompleted={this.todo.clearCompleted}
-            onSetVisibilityFilter={this.todo.setVisibilityFilter}
+        <Footer
+          activeCount={this.activeCount}
+          completedCount={this.completedCount}
+          filters={this.filters}
+          visibilityFilter={data.visibilityFilter}
+          onClearCompleted={this.todo.clearCompleted}
+          onSetVisibilityFilter={this.setVisibilityFilter}
         />
       </div>
     );

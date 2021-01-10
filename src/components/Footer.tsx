@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { VisibilityFilter, Filters } from "src/todo.service";
+import { VisibilityFilter, Filters } from "src/app.view";
 
 interface FooterProps {
   activeCount: number;

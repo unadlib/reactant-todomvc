@@ -1,10 +1,4 @@
-import { injectable, action, state, autobind } from 'reactant';
-
-const filters = ['All', 'Active', 'Completed'] as const;
-
-export type Filters = typeof filters;
-
-export type VisibilityFilter = Filters[number];
+import { injectable, action, state, autobind } from "reactant";
 
 export interface Todo {
   id: string;
@@ -14,32 +8,25 @@ export interface Todo {
 
 @injectable()
 class TodoService {
-  filters = filters;
-
   @state
-  list: Todo[] = [
-    {
+  list: Todo[] = [this.createTodo("Use Reactant")];
+
+  createTodo(text: string) {
+    return {
       id: `${Math.random()}`,
-      text: 'Use Reactant',
+      text,
       completed: false,
-    }
-  ];
-
-  @state
-  visibilityFilter: VisibilityFilter = 'All';
+    };
+  }
 
   @autobind
   @action
   add(text: string) {
-    this.list.push({
-      id: `${Math.random()}`,
-      text,
-      completed: false,
-    })
+    this.list.push(this.createTodo(text));
   }
 
   getItem(id: string) {
-    return this.list.find(item => item.id === id);
+    return this.list.find((item) => item.id === id);
   }
 
   @autobind
@@ -58,7 +45,7 @@ class TodoService {
 
   @action
   toggleAll(allCompleted: boolean) {
-    this.list.forEach(item => {
+    this.list.forEach((item) => {
       if (item.completed !== !allCompleted) {
         item.completed = !allCompleted;
       }
@@ -68,20 +55,14 @@ class TodoService {
   @autobind
   @action
   delete(id: string) {
-    const index = this.list.findIndex(item => item.id === id);
+    const index = this.list.findIndex((item) => item.id === id);
     this.list.splice(index, 1);
   }
 
   @autobind
   @action
   clearCompleted() {
-    this.list = this.list.filter(item => item.completed === false);
-  }
-
-  @autobind
-  @action
-  setVisibilityFilter(filter: VisibilityFilter) {
-    this.visibilityFilter = filter;
+    this.list = this.list.filter((item) => item.completed === false);
   }
 }
 

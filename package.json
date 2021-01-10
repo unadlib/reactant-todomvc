@@ -28,8 +28,8 @@
   "dependencies": {
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "reactant": "0.1.12",
-    "reactant-web": "0.1.12",
+    "reactant": "^0.5.1",
+    "reactant-web": "^0.5.1",
     "todomvc-app-css": "^2.3.0"
   }
 }
