@@ -25,9 +25,15 @@ module.exports = {
   },
   mode: 'development',
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    static: {
+      directory: path.join(__dirname, 'public'),
+    },
     compress: true,
-    port: 7000,
+    port: 7001,
   },
-  plugins: [new CopyWebpackPlugin([path.join(__dirname, './src/index.html')])],
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [path.join(__dirname, './src/index.html')],
+    }),
+  ],
 };
